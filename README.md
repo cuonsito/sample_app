@@ -6,5 +6,6 @@
 [*Ruby on Rails Tutorial*] (htttp://railstutorial.jp/)
 
 static-pages
+pr
 
 by [sito]		
