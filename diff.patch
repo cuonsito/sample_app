@@ -1,0 +1,85 @@
+diff --git a/app/helpers/application_helper.rb b/app/helpers/application_helper.rb
+index de6be79..3de3a32 100644
+--- a/app/helpers/application_helper.rb
++++ b/app/helpers/application_helper.rb
+@@ -1,2 +1,12 @@
+ module ApplicationHelper
+-end
++
++  # ページごとの完全なタイトルを返します。
++  def full_title(page_title)
++    base_title = "Ruby on Rails Tutorial Sample App"
++    if page_title.empty?
++      base_title
++    else
++      "#{base_title} | #{page_title}"
++    end
++  end
++end
+\ No newline at end of file
+diff --git a/app/views/layouts/application.html.erb b/app/views/layouts/application.html.erb
+index 2caf181..01f5ee4 100644
+--- a/app/views/layouts/application.html.erb
++++ b/app/views/layouts/application.html.erb
+@@ -1,7 +1,7 @@
+ <!DOCTYPE html>
+ <html>
+ <head>
+-  <title>Ruby on Rails Tutorial Sample App | <%= yield(:title) %></title>
++  <title><%= full_title(yield(:title)) %></title>
+   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+   <%= csrf_meta_tags %>
+diff --git a/app/views/static_pages/home.html.erb b/app/views/static_pages/home.html.erb
+index 6471f08..8c60d1f 100644
+--- a/app/views/static_pages/home.html.erb
++++ b/app/views/static_pages/home.html.erb
+@@ -1,7 +1,6 @@
+-<% provide(:title, 'Home') %>
+ <h1>Sample App</h1>
+ <p>
+-This is the home pae for the
+-	<a href="http://railstutorial.jp/">Ruby on Rails Tutorial</a>
+-sample application.
+-</p>
++    This is the home page for the
++    <a href="http://railstutorial.jp/">Ruby on Rails Tutorial</a>
++    sample application.
++</p>
+\ No newline at end of file
+diff --git a/spec/requests/static_pages_spec.rb b/spec/requests/static_pages_spec.rb
+index 5fbd9ed..8d3408f 100644
+--- a/spec/requests/static_pages_spec.rb
++++ b/spec/requests/static_pages_spec.rb
+@@ -4,17 +4,22 @@ describe "Static pages" do
+ 
+ 	let(:base_title) {"Ruby on Rails Tutorial Sample App"}
+ 
+-  describe "Home page" do
++   describe "Home page" do
+ 
+-	    it "should have the content 'Sample App'" do
+-    		visit '/static_pages/home'
+-    		expect(page).to have_content('Sample App')
+-    	end
++    it "should have the content 'Sample App'" do
++      visit '/static_pages/home'
++      expect(page).to have_content('Sample App')
++    end
+ 
+-      it "should have the title 'Home'" do
+-        visit '/static_pages/home'
+-        expect(page).to have_title("#{base_title} | Home")
+-      end
++    it "should have the base title" do
++      visit '/static_pages/home'
++      expect(page).to have_title("#{base_title}")
++    end
++
++    it "should not have a custom page title" do
++      visit '/static_pages/home'
++      expect(page).not_to have_title('| Home')
++    end 
+     end
+ 
+   	describe "Help page" do
