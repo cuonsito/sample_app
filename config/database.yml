@@ -8,7 +8,7 @@ development:
   encoding: utf8
   database: db/development
   pool: 5
-  usename: 
+  username: 
   password:
 
 # Warning: The database defined as "test" will be erased and
