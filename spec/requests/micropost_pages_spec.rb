@@ -42,4 +42,20 @@ describe "Micropost pages" do
       end
     end
   end
+
+  describe "pagination" do
+    before { 30.times { FactoryGirl.create(:micropost, user: user) } }
+
+    context "under 30 posts" do
+      before { visit root_path }
+      it { should_not have_selector('div.pagination') }
+    end
+    context "over 30 posts" do
+      before do
+        FactoryGirl.create(:micropost, user: user)
+        visit root_path
+      end
+      it { should have_selector('div.pagination') }
+    end
+  end
 end
