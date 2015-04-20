@@ -28,6 +28,13 @@ describe "Micropost pages" do
       it "should create a micropost" do
         expect { click_button "Post" }.to change(Micropost, :count).by(1)
       end
+
+      context "after click button" do
+        before { click_button "Post" }
+        it { should have_link(user.name, href: user_path(user)) }
+        it { should have_content("Lorem ipsum") }
+        it { should have_link('delete', href: micropost_path(user.microposts.first)) }
+      end
     end
   end
 
@@ -41,5 +48,17 @@ describe "Micropost pages" do
         expect { click_link "delete" }.to change(Micropost, :count).by(-1)
       end
     end
+  end
+
+  describe "another user's posts" do
+    let(:another_user) { FactoryGirl.create(:user) }
+    before do
+      user.follow!(another_user)
+      FactoryGirl.create(:micropost, user: another_user, content: "Rerum sed")
+      visit root_path
+    end
+    it { should have_link(another_user.name, href: user_path(another_user)) }
+    it { should have_content("Rerum sed") }
+    it { should_not have_link('delete', href: micropost_path(another_user.microposts.first)) }
   end
 end
